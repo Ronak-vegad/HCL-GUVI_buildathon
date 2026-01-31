@@ -307,7 +307,7 @@ async def health_check():
         "service": "Honeypot Scam Detector",
         "version": "1.0"
     }
-@app.get("/api/honeypot", include_in_schema=False)
+@app.api_route("/api/honeypot", methods=["GET", "POST"], include_in_schema=False)
 async def guvi_honeypot_check(request: Request):
     api_key = request.headers.get("x-api-key")
 
@@ -317,10 +317,8 @@ async def guvi_honeypot_check(request: Request):
     return {
         "status": "ok",
         "honeypot": "active",
-        "service": "agentic-honeypot",
-        "message": "Honeypot endpoint reachable and authenticated"
+        "service": "agentic-honeypot"
     }
-
 # ============================================
 # RUN THE APP
 # ============================================
