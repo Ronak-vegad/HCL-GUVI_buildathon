@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException,Request
 from pydantic import BaseModel
 from typing import List, Dict
 import os
@@ -307,7 +307,6 @@ async def health_check():
         "service": "Honeypot Scam Detector",
         "version": "1.0"
     }
-
 @app.get("/api/honeypot", include_in_schema=False)
 async def guvi_honeypot_check(request: Request):
     api_key = request.headers.get("x-api-key")
@@ -321,6 +320,7 @@ async def guvi_honeypot_check(request: Request):
         "service": "agentic-honeypot",
         "message": "Honeypot endpoint reachable and authenticated"
     }
+
 # ============================================
 # RUN THE APP
 # ============================================
