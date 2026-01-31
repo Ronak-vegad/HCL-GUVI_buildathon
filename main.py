@@ -13,7 +13,7 @@ import json
 app = FastAPI(title="Honeypot Scam Detector")
 
 # Your API Key (for authentication)
-MY_API_KEY = os.getenv("MY_API_KEY", "alterEgO12345hClGUvi_Buildathon")
+MY_API_KEY = os.getenv("API_KEY")
 
 # Configure Gemini with new API
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -308,19 +308,19 @@ async def health_check():
         "version": "1.0"
     }
 
-@app.get("/api/honeypot")
-async def guvi_honeypot_check(x_api_key: str = Header(None)):
-    if x_api_key != MY_API_KEY:
+@app.get("/api/honeypot", include_in_schema=False)
+async def guvi_honeypot_check(request: Request):
+    api_key = request.headers.get("x-api-key")
+
+    if api_key != MY_API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API Key")
 
     return {
         "status": "ok",
         "honeypot": "active",
-        "message": "Agentic honeypot service reachable",
-        "agent_type": "scam-detection",
-        "threat_detected": False
+        "service": "agentic-honeypot",
+        "message": "Honeypot endpoint reachable and authenticated"
     }
-
 # ============================================
 # RUN THE APP
 # ============================================
