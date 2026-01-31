@@ -308,6 +308,19 @@ async def health_check():
         "version": "1.0"
     }
 
+@app.get("/api/honeypot")
+async def guvi_honeypot_check(x_api_key: str = Header(None)):
+    if x_api_key != MY_API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API Key")
+
+    return {
+        "status": "ok",
+        "honeypot": "active",
+        "message": "Agentic honeypot service reachable",
+        "agent_type": "scam-detection",
+        "threat_detected": False
+    }
+
 # ============================================
 # RUN THE APP
 # ============================================
