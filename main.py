@@ -25,10 +25,18 @@ class Message(BaseModel):
     role: str
     message: str
 
+class IncomingMessage(BaseModel):
+    sender: str
+    text: str
+    timestamp: int
+
 class IncomingRequest(BaseModel):
-    conversation_id: str
-    message: str
-    conversation_history: List[Message] = []
+    sessionId: str
+    message: IncomingMessage
+    conversationHistory: list = []
+    metadata: dict = {}
+
+
 
 class HoneypotResponse(BaseModel):
     scam_detected: bool
@@ -307,17 +315,29 @@ async def health_check():
         "service": "Honeypot Scam Detector",
         "version": "1.0"
     }
-@app.api_route("/api/honeypot", methods=["GET", "POST"], include_in_schema=False)
-async def guvi_honeypot_check(request: Request):
-    api_key = request.headers.get("x-api-key")
-
-    if api_key != MY_API_KEY:
+@app.post("/api/honeypot")
+async def guvi_honeypot(
+    request: IncomingRequest,
+    x_api_key: str = Header(..., alias="x-api-key")
+):
+    if x_api_key != MY_API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API Key")
 
+    # Detect scam
+    detection = detect_scam(request.message.text)
+
+    if detection["is_scam"]:
+        reply = generate_persona_response(
+            request.message.text,
+            detection["scam_type"],
+            []
+        )
+    else:
+        reply = "Sorry, can you explain that again?"
+
     return {
-        "status": "ok",
-        "honeypot": "active",
-        "service": "agentic-honeypot"
+        "status": "success",
+        "reply": reply
     }
 # ============================================
 # RUN THE APP
