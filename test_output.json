@@ -1,0 +1,16 @@
+{
+  "scam_detected": true,
+  "confidence_score": 0.8,
+  "agent_response": "Why is my account being suspended? What do I need to verify?",
+  "engagement_status": "active",
+  "conversation_turns": 1,
+  "extracted_intelligence": {
+    "bank_accounts": [],
+    "upi_ids": [],
+    "phone_numbers": [],
+    "emails": [],
+    "phishing_links": []
+  },
+  "threat_level": "medium",
+  "continue_conversation": true
+}
