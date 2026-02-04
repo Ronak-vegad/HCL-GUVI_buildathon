@@ -5,7 +5,7 @@ import os
 import re
 import json
 from dotenv import load_dotenv
-import google.generativeai as genai
+import google.genai as genai
 
 load_dotenv()
 
@@ -15,9 +15,8 @@ app = FastAPI(title="Honeypot Scam Detector")
 MY_API_KEY = os.getenv("API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Configure Gemini
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-2.0-flash-exp')
+# Configure Gemini with new SDK
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 # In-memory conversation store (use Redis/DB in production)
 conversation_store = {}
@@ -65,7 +64,10 @@ Return ONLY valid JSON in this exact format:
 {{"is_scam": true/false, "confidence": 0.0-1.0, "scam_type": "phishing/lottery/job/bank/other/none"}}"""
 
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-2.0-flash-exp',
+            contents=prompt
+        )
         result = json.loads(response.text.strip().replace('```json', '').replace('```', ''))
         return result
     except Exception as e:
@@ -122,7 +124,10 @@ Scammer just said: "{message}"
 Generate your response (just the message, no explanation):"""
 
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-2.0-flash-exp',
+            contents=prompt
+        )
         return response.text.strip().strip('"')
     except Exception as e:
         # Fallback responses
