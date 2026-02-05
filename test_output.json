@@ -3,7 +3,7 @@
   "confidence_score": 0.8,
   "agent_response": "Why is my account being suspended? What do I need to verify?",
   "engagement_status": "active",
-  "conversation_turns": 1,
+  "conversation_turns": 2,
   "extracted_intelligence": {
     "bank_accounts": [],
     "upi_ids": [],

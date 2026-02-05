@@ -2,7 +2,8 @@ import requests
 import json
 
 API_URL = "http://localhost:8000/api/honeypot"
-API_KEY = "alterEgOI2345hCiGUvi_Buildathon"
+API_KEY = "alterEgo12345hCiGUvi_Buildathon"
+
 
 # Test message
 test_message = {

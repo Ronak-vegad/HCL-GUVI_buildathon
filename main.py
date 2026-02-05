@@ -15,6 +15,11 @@ app = FastAPI(title="Honeypot Scam Detector")
 MY_API_KEY = os.getenv("API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+# DEBUG
+print(f"DEBUG: Loaded API_KEY = {repr(MY_API_KEY)}")
+print(f"DEBUG: Length = {len(MY_API_KEY) if MY_API_KEY else 0}")
+print(f"DEBUG: Bytes = {MY_API_KEY.encode() if MY_API_KEY else b''}")
+
 # Configure Gemini with new SDK
 client = genai.Client(api_key=GEMINI_API_KEY)
 
@@ -65,7 +70,7 @@ Return ONLY valid JSON in this exact format:
 
     try:
         response = client.models.generate_content(
-            model='gemini-2.0-flash-exp',
+            model='gemini-1.5-flash',
             contents=prompt
         )
         result = json.loads(response.text.strip().replace('```json', '').replace('```', ''))
@@ -182,7 +187,7 @@ def calculate_threat_level(intel: dict, confidence: float) -> str:
         return "medium"
     else:
         return "low"
-
+    
 # ===================== HEALTH =====================
 
 @app.get("/")
@@ -267,3 +272,7 @@ async def guvi_honeypot(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+print("LOADED API KEY:", os.getenv("API_KEY"))
+
+
